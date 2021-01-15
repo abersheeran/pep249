@@ -66,11 +66,11 @@ class ImmutableAttribute(Generic[T]):
 
     def __set__(self, instance: object, value: T) -> None:
         if hasattr(instance, self.private_name):
-            raise RuntimeError(f"{instance.__name__}.{self.public_name} is immutable")
+            raise RuntimeError(f"{instance.__class__.__name__}.{self.public_name} is immutable")
         setattr(instance, self.private_name, value)
 
     def __delete__(self, instance: object) -> None:
-        raise RuntimeError(f"{instance.__name__}.{self.public_name} is immutable")
+        raise RuntimeError(f"{instance.__class__.__name__}.{self.public_name} is immutable")
 
 
 class ConnectionPool:
