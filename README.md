@@ -17,6 +17,9 @@ conn_pool = ConnectionPool(
         "http://localhost:8765/", autocommit=True
     ),
 )
+
+with conn_pool.connect() as connection:
+    ...
 ```
 
 **Note**: The connection pool does not actively initialize the connection, it is initialized only when it is needed.
