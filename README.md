@@ -2,6 +2,12 @@
 
 Provide minimum implementation check and connection pool of PEP249.
 
+## Install
+
+```
+pip install pep249
+```
+
 ## Usage
 
 ### Connection Pool
