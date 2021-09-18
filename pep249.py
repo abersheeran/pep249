@@ -36,7 +36,7 @@ class Cursor(Protocol):
     def close(self):
         raise NotImplementedError()
 
-    def execute(self, operation: str, *parameters: Any) -> Any:
+    def execute(self, operation: str, parameters: Any) -> Any:
         raise NotImplementedError()
 
     def executemany(
