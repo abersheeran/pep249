@@ -9,7 +9,7 @@ with open("./README.md", "r", encoding="utf8") as file:
 
 setup(
     name="pep249",
-    version="1.0.0",
+    version="1.0.1",
     url="https://github.com/abersheeran/pep249",
     description="Provide minimum implementation check and connection pool of PEP249.",
     long_description=long_description,
