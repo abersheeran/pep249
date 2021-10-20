@@ -4,6 +4,7 @@ import threading
 from queue import Queue, Empty as EmptyQueueError
 from contextlib import contextmanager
 from typing import (
+    Generator,
     Protocol,
     runtime_checkable,
     Optional,
@@ -36,13 +37,15 @@ class Cursor(Protocol):
     def close(self):
         raise NotImplementedError()
 
-    def execute(self, operation: str, parameters: Any) -> Any:
+    def execute(
+        self, operation: str, parameters: Union[Sequence[Any], Mapping[str, Any]] = None
+    ) -> Any:
         raise NotImplementedError()
 
     def executemany(
         self,
         operation: str,
-        seq_of_parameters: Sequence[Union[Sequence[Any], Mapping[str, Any]]],
+        seq_of_parameters: Sequence[Union[Sequence[Any], Mapping[str, Any]]] = None,
     ) -> Any:
         raise NotImplementedError()
 
@@ -66,11 +69,15 @@ class ImmutableAttribute(Generic[T]):
 
     def __set__(self, instance: object, value: T) -> None:
         if hasattr(instance, self.private_name):
-            raise RuntimeError(f"{instance.__class__.__name__}.{self.public_name} is immutable")
+            raise RuntimeError(
+                f"{instance.__class__.__name__}.{self.public_name} is immutable"
+            )
         setattr(instance, self.private_name, value)
 
     def __delete__(self, instance: object) -> None:
-        raise RuntimeError(f"{instance.__class__.__name__}.{self.public_name} is immutable")
+        raise RuntimeError(
+            f"{instance.__class__.__name__}.{self.public_name} is immutable"
+        )
 
 
 class ConnectionPool:
@@ -131,16 +138,13 @@ class ConnectionPool:
         self.connection_queue.put(connection, block=False)
 
     @contextmanager
-    def connect(self):
+    def connect(self) -> Generator[Connection, None, None]:
         """
         Acquire a connection and automatically reclaim
         it to the pool after leaving the context manager.
-
             with pool.connect() as connection:
                 ...
-
         Equivalent to:
-
             connection = pool.acquire()
             try:
                 ...
