@@ -135,6 +135,7 @@ class ConnectionPool:
         return connection
 
     def release(self, connection: Connection) -> None:
+        connection.rollback()  # Clear all transactions and locks
         self.connection_queue.put(connection, block=False)
 
     @contextmanager
