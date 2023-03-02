@@ -38,21 +38,25 @@ class Cursor(Protocol):
         raise NotImplementedError()
 
     def execute(
-        self, operation: str, parameters: Union[Sequence[Any], Mapping[str, Any]] = None
+        self,
+        operation: str,
+        parameters: Optional[Union[Sequence[Any], Mapping[str, Any]]] = None,
     ) -> Any:
         raise NotImplementedError()
 
     def executemany(
         self,
         operation: str,
-        seq_of_parameters: Sequence[Union[Sequence[Any], Mapping[str, Any]]] = None,
+        seq_of_parameters: Optional[
+            Sequence[Union[Sequence[Any], Mapping[str, Any]]]
+        ] = None,
     ) -> Any:
         raise NotImplementedError()
 
     def fetchone(self) -> Optional[Sequence[Any]]:
         raise NotImplementedError()
 
-    def fetchmany(self, size: int = None) -> Sequence[Sequence[Any]]:
+    def fetchmany(self, size: Optional[int] = None) -> Sequence[Sequence[Any]]:
         raise NotImplementedError()
 
     def fetchall(self) -> Sequence[Sequence[Any]]:
@@ -64,7 +68,7 @@ class ImmutableAttribute(Generic[T]):
         self.public_name = name
         self.private_name = "_" + name
 
-    def __get__(self, instance: object, cls: type = None) -> T:
+    def __get__(self, instance: object, cls: Optional[type] = None) -> T:
         return getattr(instance, self.private_name)
 
     def __set__(self, instance: object, value: T) -> None:
@@ -135,7 +139,6 @@ class ConnectionPool:
         return connection
 
     def release(self, connection: Connection) -> None:
-        connection.rollback()  # Clear all transactions and locks
         self.connection_queue.put(connection, block=False)
 
     @contextmanager
